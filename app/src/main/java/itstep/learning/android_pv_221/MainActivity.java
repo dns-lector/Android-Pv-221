@@ -1,7 +1,9 @@
 package itstep.learning.android_pv_221;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,11 +24,18 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        findViewById( R.id.main_btn_calc ).setOnClickListener( this::onCalcButtonClick );
+        Button button = findViewById( R.id.main_btn_calc );
+        button.setOnClickListener( this::onCalcButtonClick );
     }
 
     private void onCalcButtonClick( View view ) {
-        Toast.makeText(this, "Тут буде калькулятор", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent( MainActivity.this, CalcActivity.class );
+        startActivity( intent );
     }
 }
+/*
+Д.З. Створити проєкт, налаштувати відображення
+(кольори, шрифти, розміри, відступи)
+Опублікувати проєкт, додати посилання на репозиторій
+На репозиторії додати папку з скріншотами.
+ */
