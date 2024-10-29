@@ -43,12 +43,12 @@
             app:backgroundTint="@null" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/main_btn_game"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/main_btn_background"
             android:layout_marginTop="40dp"
-            android:text="@string/main_btn_calc"
+            android:text="@string/main_btn_game"
             android:textSize="20sp"
             app:backgroundTint="@null" />
     </LinearLayout>

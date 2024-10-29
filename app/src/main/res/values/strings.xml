@@ -2,6 +2,7 @@
     <string name="app_name">Android-Pv-221</string>
     <string name="app_title">Знайомство \u0026 з Андроїд</string>
     <string name="main_btn_calc">Калькулятор</string>
+    <string name="main_btn_game">2048</string>
 
     <!-- region Calc -->
     <string name="calc_tv_title">Калькулятор</string>

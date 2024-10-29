@@ -16,4 +16,24 @@
     <color name="calc_btn_equal">#4CC1FE</color>
     <!-- endregion -->
 
+    <!-- region 2048 -->
+    <color name="game_layout_background">#F8F6EE</color>
+    <color name="game_btn_background">#8E7966</color>
+    <color name="game_table_color">#BAAC9F</color>
+    <color name="game_main_tile_color">#CCC0B3</color>
+    <color name="game_tile_2">#ECE3D9</color>
+    <color name="game_tile_4">#EBDFC7</color>
+    <color name="game_tile_8">#F0B078</color>
+    <color name="game_tile_16">#F39463</color>
+    <color name="game_tile_32">#F47B5F</color>
+    <color name="game_tile_64">#F45E3B</color>
+    <color name="game_tile_128">#EBCE71</color>
+    <color name="game_tile_256">#EBCB61</color>
+    <color name="game_tile_512">#E5C764</color>
+    <color name="game_tile_1024">#EBC43F</color>
+    <color name="game_tile_2048">#ECC02E</color>
+    <color name="game_first_text_color">#766D65</color>
+    <color name="game_second_text_color">#F5F4F4</color>
+    <!-- endregion -->
+
 </resources>
