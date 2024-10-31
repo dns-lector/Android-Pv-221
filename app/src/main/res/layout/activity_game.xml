@@ -56,6 +56,7 @@
         android:layout_height="match_parent"
         android:layout_margin="20dp"
         android:background="@color/calc_history_color"
+        android:padding="5dp"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,28 +64,67 @@
             android:layout_height="0dp">
             <TextView
                 android:id="@+id/game_cell_00"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="2"/>
+                style="@style/game_cell" />
             <TextView
                 android:id="@+id/game_cell_01"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="2"/>
+                style="@style/game_cell" />
             <TextView
                 android:id="@+id/game_cell_02"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="2"/>
+                style="@style/game_cell" />
             <TextView
                 android:id="@+id/game_cell_03"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:text="2"/>
+                style="@style/game_cell" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+            <TextView
+                android:id="@+id/game_cell_10"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_11"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_12"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_13"
+                style="@style/game_cell" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+            <TextView
+                android:id="@+id/game_cell_20"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_21"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_22"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_23"
+                style="@style/game_cell" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+            <TextView
+                android:id="@+id/game_cell_30"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_31"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_32"
+                style="@style/game_cell" />
+            <TextView
+                android:id="@+id/game_cell_33"
+                style="@style/game_cell" />
         </LinearLayout>
     </LinearLayout>
 

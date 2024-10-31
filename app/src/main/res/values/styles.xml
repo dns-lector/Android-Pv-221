@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="game_cell">
+        <item name="android:background">@drawable/game_cell</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+    <style name="game_cell_0" parent="game_cell">
+        <item name="android:colorBackground">@color/game_tile_0</item>
+
+    </style>
+
+
+
     <style name="calc_btn">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>

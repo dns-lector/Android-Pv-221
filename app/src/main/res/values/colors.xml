@@ -21,6 +21,7 @@
     <color name="game_btn_background">#8E7966</color>
     <color name="game_table_color">#BAAC9F</color>
     <color name="game_main_tile_color">#CCC0B3</color>
+    <color name="game_tile_0">#BCB09B</color>
     <color name="game_tile_2">#ECE3D9</color>
     <color name="game_tile_4">#EBDFC7</color>
     <color name="game_tile_8">#F0B078</color>
@@ -32,6 +33,22 @@
     <color name="game_tile_512">#E5C764</color>
     <color name="game_tile_1024">#EBC43F</color>
     <color name="game_tile_2048">#ECC02E</color>
+    <color name="game_tile_other">#3B3B31</color>
+
+    <color name="game_text_0">#BCB09B</color>
+    <color name="game_text_2">#766F62</color>
+    <color name="game_text_4">#6D665B</color>
+    <color name="game_text_8">#F8F7F1</color>
+    <color name="game_text_16">#F8F4EB</color>
+    <color name="game_text_32">#F8F4EB</color>
+    <color name="game_text_64">#F8F4EB</color>
+    <color name="game_text_128">#F8F4EB</color>
+    <color name="game_text_256">#F8F4EB</color>
+    <color name="game_text_512">#F8F7F1</color>
+    <color name="game_text_1024">#F8F7F1</color>
+    <color name="game_text_2048">#F8F7F1</color>
+    <color name="game_text_other">#F8F6EF</color>
+
     <color name="game_first_text_color">#766D65</color>
     <color name="game_second_text_color">#F5F4F4</color>
     <!-- endregion -->
