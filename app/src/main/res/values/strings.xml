@@ -3,6 +3,7 @@
     <string name="app_title">Знайомство \u0026 з Андроїд</string>
     <string name="main_btn_calc">Калькулятор</string>
     <string name="main_btn_game">2048</string>
+    <string name="main_btn_anim">Анімації</string>
 
     <!-- region Calc -->
     <string name="calc_tv_title">Калькулятор</string>

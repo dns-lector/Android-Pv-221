@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scale xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromXScale="1.0"
+    android:fromYScale="1.0"
+    android:toXScale="1.5"
+    android:toYScale="1.5"
+    android:duration="700"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:repeatMode="reverse"
+    android:repeatCount="3"
+    />
+<!--
+    Анімація масштабу (розміру) демонструє поняття "нерухомої точки" (pivot) -
+    точки фігури, яка не змінює свого положення під час анімації
+
+             (0,0)
+    +**      +****
+    ***  ->  *****
+    ***      *****
+             *****
+             *****
+
+           (0.5,0.5)
+             *****
+    ***      *****
+    *+*  ->  **+**
+    ***      *****
+             *****
+
+    Режим повтору (android:repeatCount) визначає загальний час анімації:
+    базовий час + кількість повторів
+    repeatCount    анімацій (циклів)
+         0             1 (1 + 0)
+         1             2 (1 + 1)
+         2             3 (1 + 2)
+         -1            нескінченне повторення
+    стиль (режим) переходу від циклу до циклу визначається android:repeatMode
+    "reverse" - плавне програвання "назад"
+    "restart" - різке повернення назад
+ -->
