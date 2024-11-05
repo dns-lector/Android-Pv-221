@@ -29,6 +29,9 @@ public class GameActivity extends AppCompatActivity {
     private final TextView[][] tvCells = new TextView[N][N];
     private final Random random = new Random();
     private Animation spawnAnimation, collapseAnimation;
+    private int score, bestScore;
+    private TextView tvScore, tvBestScore;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -44,6 +47,8 @@ public class GameActivity extends AppCompatActivity {
         spawnAnimation = AnimationUtils.loadAnimation( this, R.anim.game_spawn ) ;
         collapseAnimation = AnimationUtils.loadAnimation( this, R.anim.game_collapse ) ;
         LinearLayout gameField = findViewById( R.id.game_ll_field );
+        tvScore = findViewById( R.id.game_tv_score );
+        tvBestScore = findViewById( R.id.game_tv_best_score );
         gameField.post( () -> {
             // дії, що будуть виконані коли
             // об'єкт (gameField) буде готовий приймати повідомлення,
@@ -110,6 +115,7 @@ public class GameActivity extends AppCompatActivity {
                     else {
                         if( cells[i][j] == cells[i][j0] ) {  // collapse
                             cells[i][j] *= 2;
+                            score += cells[i][j];
                             tvCells[i][j].setTag( collapseAnimation );
                             cells[i][j0] = 0;
                             result = true;
@@ -159,6 +165,7 @@ public class GameActivity extends AppCompatActivity {
             for( int j = N - 1; j > 0; j-- ) {          //  [2 2 4 4]
                 if( cells[i][j - 1] == cells[i][j] && cells[i][j] != 0 ) {
                     cells[i][j] *= 2;                   //  [2 2 4 8]
+                    score += cells[i][j];
                     tvCells[i][j].setTag( collapseAnimation );
                     // cells[i][j - 1] = 0;             //  [2 2 0 8]
                     for( int k = j - 1; k > 0; k-- ) {  //  [2 2 2 8]
@@ -208,6 +215,8 @@ public class GameActivity extends AppCompatActivity {
                 );
             }
         }
+        score = 0;
+        bestScore = 20;
     }
 
     private void showField() {
@@ -242,6 +251,11 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         }
+        tvScore.setText( getString( R.string.game_tv_score, String.valueOf( score ) ) );
+        if( score > bestScore ) {
+            bestScore = score;
+        }
+        tvBestScore.setText( getString( R.string.game_tv_best, String.valueOf( bestScore ) ) );
     }
 
     static class Coordinates {
@@ -254,6 +268,6 @@ public class GameActivity extends AppCompatActivity {
     }
 }
 /*
-2048: Реалізувати рухи в низ та в гору
-Забезпечити програвання анімацій появи та злиття в усіх рухах
+2048: Реалізувати роботу кнопки "Нова гра" (NEW)
+Забезпечити програвання анімацій перевищення рекордного рахунку
  */

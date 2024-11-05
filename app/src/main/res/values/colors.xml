@@ -18,7 +18,8 @@
 
     <!-- region 2048 -->
     <color name="game_layout_background">#F8F6EE</color>
-    <color name="game_btn_background">#8E7966</color>
+    <color name="game_btn_background">#F75200</color>
+    <color name="game_tv_background">#3B3B31</color>
     <color name="game_table_color">#BAAC9F</color>
     <color name="game_main_tile_color">#CCC0B3</color>
     <color name="game_tile_0">#BCB09B</color>
