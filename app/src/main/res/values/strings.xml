@@ -4,6 +4,7 @@
     <string name="main_btn_calc">Калькулятор</string>
     <string name="main_btn_game">2048</string>
     <string name="main_btn_anim">Анімації</string>
+    <string name="main_btn_chat">Мережа. Чат</string>
 
     <!-- region Anim -->
     <string name="anim_tv_alpha">Альфа</string>

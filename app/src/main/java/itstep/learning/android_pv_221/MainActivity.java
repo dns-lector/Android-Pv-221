@@ -12,7 +12,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
+
 public class MainActivity extends AppCompatActivity {
+    // private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById( R.id.main_btn_game ).setOnClickListener( this::onGameButtonClick );
         findViewById( R.id.main_btn_anim ).setOnClickListener( this::onAnimButtonClick );
+        findViewById( R.id.main_btn_chat ).setOnClickListener( this::onChatButtonClick );
     }
 
     private void onCalcButtonClick( View view ) {
@@ -41,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     }
     private void onAnimButtonClick( View view ) {
         Intent intent = new Intent( MainActivity.this, AnimActivity.class );
+        startActivity( intent );
+    }
+    private void onChatButtonClick( View view ) {
+        Intent intent = new Intent( MainActivity.this, ChatActivity.class );
         startActivity( intent );
     }
 }
