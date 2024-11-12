@@ -17,9 +17,52 @@
         android:gravity="center"/>
 
     <LinearLayout
-        android:id="@+id/chat_ll_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Author:"/>
+        <EditText
+            android:id="@+id/chat_et_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="DNS"/>
+    </LinearLayout>
 
+    <ScrollView
+        android:id="@+id/chat_scroller"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/chat_ll_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Message:"/>
+
+        <EditText
+            android:id="@+id/chat_et_message"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="Вітаннєчко++!"/>
+
+        <ImageButton
+            android:id="@+id/chat_btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_send" />
+    </LinearLayout>
 </LinearLayout>

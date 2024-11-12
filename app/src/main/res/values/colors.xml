@@ -7,6 +7,8 @@
 
     <color name="main_btn_background">#066B07</color>
 
+    <color name="chat_msg_other">#C3D5F0</color>
+
     <!-- region Calc -->
     <color name="calc_layout_background">#202020</color>
     <color name="calc_text_color">#FEFEFE</color>
