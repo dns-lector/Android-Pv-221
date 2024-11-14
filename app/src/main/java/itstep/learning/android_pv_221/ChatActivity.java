@@ -2,10 +2,13 @@ package itstep.learning.android_pv_221;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -14,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,9 +31,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,28 +53,44 @@ public class ChatActivity extends AppCompatActivity {
     private ScrollView chatScroller;
     private EditText etAuthor;
     private EditText etMessage;
+    private View vBell;
     private final ExecutorService threadPool = Executors.newFixedThreadPool( 3 );
     private final Gson gson = new Gson();
     private final List<ChatMessage> messages = new ArrayList<>();
+    private final Handler handler = new Handler();
+    private Animation bellAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        //     Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        //     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        //     return insets;
+        // });
         tvTitle       = findViewById( R.id.chat_tv_title     );
         chatContainer = findViewById( R.id.chat_ll_container );
         chatScroller  = findViewById( R.id.chat_scroller     );
         etAuthor      = findViewById( R.id.chat_et_author    );
         etMessage     = findViewById( R.id.chat_et_message   );
+        vBell         = findViewById( R.id.chat_bell         );
         findViewById( R.id.chat_btn_send ).setOnClickListener( this::sendButtonClick );
-        loadChat();
+        bellAnimation = AnimationUtils.loadAnimation(this, R.anim.bell );
+        handler.post( this::periodic );
+        chatScroller.addOnLayoutChangeListener( ( View v,
+             int left,    int top,    int right,    int bottom,
+             int leftWas, int topWas, int rightWas, int bottomWas) -> chatScroller.post(
+                ()-> chatScroller.fullScroll( View.FOCUS_DOWN )
+        ));
     }
+
+    private void periodic() {
+        loadChat();
+        handler.postDelayed( this::periodic, 3000 );
+    }
+
     private void sendButtonClick( View view ) {
         String author = etAuthor.getText().toString();
         if( author.isEmpty() ) {
@@ -108,8 +130,8 @@ public class ChatActivity extends AppCompatActivity {
             // формат повідомлення форми: key1=value1&key2=value2
             bodyStream.write(
                     String.format( "author=%s&msg=%s",
-                            chatMessage.getAuthor(),
-                            chatMessage.getText()
+                            URLEncoder.encode( chatMessage.getAuthor(), StandardCharsets.UTF_8.name() ),
+                            URLEncoder.encode( chatMessage.getText(), StandardCharsets.UTF_8.name() )
                     ).getBytes( StandardCharsets.UTF_8 )
             );
             bodyStream.flush();   // передача запиту
@@ -138,7 +160,7 @@ public class ChatActivity extends AppCompatActivity {
         CompletableFuture
                 .supplyAsync( this::getChatAsString, threadPool )
                 .thenApply( this::processChatResponse )
-                .thenAccept( this::displayChatMessages );
+                .thenAccept( m -> runOnUiThread( () -> displayChatMessages(m) ) );
     }
 
     private String getChatAsString() {
@@ -173,21 +195,26 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
         if( ! wasNew ) return ;
-        //
+        // сортуємо за зростанням дати (останні у кінці)
+        messages.sort( Comparator.comparing( ChatMessage::getMoment ) );
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         layoutParams.setMargins(10, 15, 50, 5);
-        Drawable bgOther = getResources().getDrawable( R.drawable.chat_msg_other, getTheme() );
-        runOnUiThread( () -> chatContainer.removeAllViews() ) ;
-        for( ChatMessage cm : chatMessages ) {
+        Drawable bgOther = AppCompatResources.getDrawable(
+                ChatActivity.this,
+                R.drawable.chat_msg_other
+        );
+        for( ChatMessage cm : messages ) {
+            if( cm.getView() != null ) continue;
+
             LinearLayout linearLayout = new LinearLayout( ChatActivity.this ) ;
             linearLayout.setOrientation( LinearLayout.VERTICAL );
 
             TextView tv = new TextView( ChatActivity.this );
-            tv.setText( cm.getAuthor() );
+            tv.setText( cm.getAuthor() + " " + cm.getMoment() );
             tv.setPadding( 30, 5, 30, 5 );
             linearLayout.addView( tv );
 
@@ -198,9 +225,13 @@ public class ChatActivity extends AppCompatActivity {
 
             linearLayout.setBackground( bgOther );
             linearLayout.setLayoutParams( layoutParams );
-            runOnUiThread( () -> chatContainer.addView( linearLayout ) ) ;
+            cm.setView( linearLayout );
+            chatContainer.addView( linearLayout );
         }
-
+        chatContainer.post( () -> {
+            chatScroller.fullScroll( View.FOCUS_DOWN ) ;
+            vBell.startAnimation( bellAnimation ) ;
+        } ) ;
     }
 
     private String readString( InputStream stream ) throws IOException {
@@ -217,6 +248,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
         threadPool.shutdownNow();
         super.onDestroy();
     }
@@ -254,6 +286,16 @@ public class ChatActivity extends AppCompatActivity {
         private String author;
         private String text;
         private String moment;
+
+        private View view;
+
+        public View getView() {
+            return view;
+        }
+
+        public void setView(View view) {
+            this.view = view;
+        }
 
         public String getId() {
             return id;
@@ -311,10 +353,7 @@ Internet. Одержання даних
     тільки з того потоку, у якому він (UI) створений.
     Для передачі роботи до нього є метод runOnUiThread( Runnable );
 
-Д.З. Чат:
-- поділити повідомлення на свої/інші, забезпечити візуальну відмінність
-   (визначати свої - за збігом автора повідомлення та введеного у полі чату)
-- фіксувати автора після надсилання першого повідомлення, після цього зміна неможлива
-* також фіксувати це значення у файл і при наступному включенні чату підставляти його до поля.
+Д.З. Чат: Забезпечити прибирання екранної клавіатури при зміні фокусу / кліку на
+головне вікно чату.
 
  */
