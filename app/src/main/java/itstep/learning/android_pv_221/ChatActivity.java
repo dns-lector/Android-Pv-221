@@ -1,7 +1,14 @@
 package itstep.learning.android_pv_221;
 
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -17,6 +25,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 
 import com.google.gson.Gson;
 
@@ -129,6 +139,55 @@ public class ChatActivity extends AppCompatActivity {
             });
             emojiContainer.addView( tv );
         }
+        urlToImgView(
+                "https://www.assuropoil.fr/wp-content/uploads/2023/07/avoir-un-chat-sante.jpg",
+                findViewById( R.id.chat_img )
+        );
+    }
+
+    private void showNotification() {
+        // Реєструємо канал у системі
+        NotificationChannel channel = new NotificationChannel(
+                "ChatChannel", "ChatChannel", NotificationManager.IMPORTANCE_DEFAULT );
+        NotificationManager notificationManager = getSystemService( NotificationManager.class );
+        notificationManager.createNotificationChannel( channel );
+
+
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ActivityCompat.checkSelfPermission( this,
+                        android.Manifest.permission.POST_NOTIFICATIONS ) !=
+                PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[] { android.Manifest.permission.POST_NOTIFICATIONS },
+                    1002 ) ;
+            return;
+        }
+        // Надсилання повідомлення
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder( this, "ChatChannel" )
+                        .setSmallIcon( android.R.drawable.star_big_on )
+                        .setContentTitle( "Чат" )
+                        .setContentText( "Нове повідомлення")
+                        .setPriority( NotificationManager.IMPORTANCE_DEFAULT );
+        Notification notification = builder.build();
+        notificationManager.notify( 1001, notification );
+    }
+
+
+
+    private void urlToImgView( String url, ImageView imageView ) {
+        CompletableFuture
+                .supplyAsync( () -> {
+                    try( InputStream inputStream = new URL(url).openStream() ) {
+                        return BitmapFactory.decodeStream( inputStream );
+                    }
+                    catch( IOException ex ) {
+                        Log.e( "urlToImgView", ex.getMessage() == null ? ex.getClass().toString() : ex.getMessage() );
+                        return null;
+                    }
+                }, threadPool )
+                .thenAccept( bmp -> runOnUiThread( () -> imageView.setImageBitmap(bmp) ) );
     }
 
     private void periodic() {
@@ -293,6 +352,7 @@ public class ChatActivity extends AppCompatActivity {
             chatScroller.fullScroll( View.FOCUS_DOWN ) ;
             vBell.startAnimation( bellAnimation ) ;
             incomingMessage.start();
+            showNotification();
         } ) ;
     }
 

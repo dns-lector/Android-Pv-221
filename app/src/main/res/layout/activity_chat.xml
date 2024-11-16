@@ -37,6 +37,10 @@
             android:layout_height="48dp"
             android:background="@android:drawable/ic_popup_reminder"
             android:backgroundTint="@color/calc_btn_digit" />
+        <ImageView
+            android:id="@+id/chat_img"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
 
     </LinearLayout>
 
