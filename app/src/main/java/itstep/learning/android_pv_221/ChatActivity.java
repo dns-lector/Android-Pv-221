@@ -1,10 +1,10 @@
 package itstep.learning.android_pv_221;
 
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -15,12 +15,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.gson.Gson;
 
@@ -37,8 +33,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,7 +46,6 @@ public class ChatActivity extends AppCompatActivity {
             "yyyy-MM-dd HH:mm:ss", Locale.ROOT
     );
     private final String chatUrl = "https://chat.momentfor.fun/";
-    private TextView tvTitle;
     private LinearLayout chatContainer;
     private ScrollView chatScroller;
     private EditText etAuthor;
@@ -59,18 +56,55 @@ public class ChatActivity extends AppCompatActivity {
     private final List<ChatMessage> messages = new ArrayList<>();
     private final Handler handler = new Handler();
     private Animation bellAnimation;
+    private final Map<String, String> emoji = new HashMap<String, String>() { {
+        put(":):", new String(Character.toChars(0x1F600))); // Grinning Face
+        put(":D:", new String(Character.toChars(0x1F603))); // Smiling Face
+        put(":;):", new String(Character.toChars(0x1F609))); // Winking Face
+        put(":P:", new String(Character.toChars(0x1F61B))); // Tongue Out
+        put(":'(:", new String(Character.toChars(0x1F622))); // Crying Face
+        put(":(:", new String(Character.toChars(0x1F641))); // Frowning Face
+
+        // Animals
+        put(":cat:", new String(Character.toChars(0x1F408))); // Cat
+        put(":dog:", new String(Character.toChars(0x1F436))); // Dog
+        put(":fox:", new String(Character.toChars(0x1F98A))); // Fox
+        put(":panda:", new String(Character.toChars(0x1F43C))); // Panda
+
+        // Objects
+        put(":heart:", new String(Character.toChars(0x2764))); // Heart
+        put(":star:", new String(Character.toChars(0x2B50))); // Star
+        put(":fire:", new String(Character.toChars(0x1F525))); // Fire
+        put(":phone:", new String(Character.toChars(0x1F4F1))); // Mobile Phone
+
+        // Nature
+        put(":sun:", new String(Character.toChars(0x2600))); // Sun
+        put(":moon:", new String(Character.toChars(0x1F319))); // Crescent Moon
+        put(":tree:", new String(Character.toChars(0x1F333))); // Deciduous Tree
+        put(":flower:", new String(Character.toChars(0x1F33C))); // Blossom
+
+        // Food
+        put(":apple:", new String(Character.toChars(0x1F34E))); // Red Apple
+        put(":pizza:", new String(Character.toChars(0x1F355))); // Pizza
+        put(":coffee:", new String(Character.toChars(0x2615))); // Hot Beverage
+        put(":cake:", new String(Character.toChars(0x1F382))); // Birthday Cake
+
+        // Flags
+        put(":flag_us:", new String(Character.toChars(0x1F1FA)) + new String(Character.toChars(0x1F1F8))); // US Flag
+        put(":flag_fr:", new String(Character.toChars(0x1F1EB)) + new String(Character.toChars(0x1F1F7))); // France Flag
+        put(":flag_jp:", new String(Character.toChars(0x1F1EF)) + new String(Character.toChars(0x1F1F5))); // Japan Flag
+
+        // Symbols
+        put(":check:", new String(Character.toChars(0x2714))); // Check Mark
+        put(":cross:", new String(Character.toChars(0x274C))); // Cross Mark
+        put(":warning:", new String(Character.toChars(0x26A0)));
+    } } ;
+    private MediaPlayer incomingMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
-        // ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-        //     Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-        //     v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-        //     return insets;
-        // });
-        tvTitle       = findViewById( R.id.chat_tv_title     );
+        LinearLayout emojiContainer = findViewById(R.id.chat_ll_emoji);
         chatContainer = findViewById( R.id.chat_ll_container );
         chatScroller  = findViewById( R.id.chat_scroller     );
         etAuthor      = findViewById( R.id.chat_et_author    );
@@ -78,12 +112,23 @@ public class ChatActivity extends AppCompatActivity {
         vBell         = findViewById( R.id.chat_bell         );
         findViewById( R.id.chat_btn_send ).setOnClickListener( this::sendButtonClick );
         bellAnimation = AnimationUtils.loadAnimation(this, R.anim.bell );
+        incomingMessage = MediaPlayer.create( this, R.raw.hit_00 );
         handler.post( this::periodic );
         chatScroller.addOnLayoutChangeListener( ( View v,
              int left,    int top,    int right,    int bottom,
              int leftWas, int topWas, int rightWas, int bottomWas) -> chatScroller.post(
                 ()-> chatScroller.fullScroll( View.FOCUS_DOWN )
         ));
+        for( Map.Entry<String, String> e : emoji.entrySet() ) {
+            TextView tv = new TextView( this ) ;
+            tv.setText( e.getValue() );
+            tv.setTextSize( 20 );
+            tv.setOnClickListener(v -> {
+                etMessage.setText( etMessage.getText() + e.getValue() );
+                etMessage.setSelection( etMessage.getText().length() );
+            });
+            emojiContainer.addView( tv );
+        }
     }
 
     private void periodic() {
@@ -112,6 +157,19 @@ public class ChatActivity extends AppCompatActivity {
         );
     }
 
+    private String encodeEmoji( String input ) {
+        for( Map.Entry<String, String> e : emoji.entrySet() ) {
+            input = input.replace( e.getValue(), e.getKey() ) ;
+        }
+        return input;
+    }
+    private String decodeEmoji( String input ) {
+        for( Map.Entry<String, String> e : emoji.entrySet() ) {
+            input = input.replace( e.getKey(), e.getValue() ) ;
+        }
+        return input;
+    }
+
     private void sendChatMessage( ChatMessage chatMessage ) {
         try {
             URL url = new URL( chatUrl );
@@ -131,7 +189,9 @@ public class ChatActivity extends AppCompatActivity {
             bodyStream.write(
                     String.format( "author=%s&msg=%s",
                             URLEncoder.encode( chatMessage.getAuthor(), StandardCharsets.UTF_8.name() ),
-                            URLEncoder.encode( chatMessage.getText(), StandardCharsets.UTF_8.name() )
+                            URLEncoder.encode(
+                                    encodeEmoji( chatMessage.getText() ),
+                                    StandardCharsets.UTF_8.name() )
                     ).getBytes( StandardCharsets.UTF_8 )
             );
             bodyStream.flush();   // передача запиту
@@ -190,6 +250,7 @@ public class ChatActivity extends AppCompatActivity {
         for( ChatMessage cm : chatMessages ) {
             if( messages.stream().noneMatch( m -> m.getId().equals( cm.getId() ) ) ) {
                 // нове повідомлення
+                cm.setText( decodeEmoji( cm.getText() ) );
                 messages.add( cm );
                 wasNew = true;
             }
@@ -231,6 +292,7 @@ public class ChatActivity extends AppCompatActivity {
         chatContainer.post( () -> {
             chatScroller.fullScroll( View.FOCUS_DOWN ) ;
             vBell.startAnimation( bellAnimation ) ;
+            incomingMessage.start();
         } ) ;
     }
 
