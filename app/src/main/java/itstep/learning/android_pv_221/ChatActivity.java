@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -23,6 +25,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
@@ -143,6 +146,11 @@ public class ChatActivity extends AppCompatActivity {
                 "https://www.assuropoil.fr/wp-content/uploads/2023/07/avoir-un-chat-sante.jpg",
                 findViewById( R.id.chat_img )
         );
+        Bundle extras = getIntent().getExtras();
+        if( extras != null ) {
+            // Запущено через клік на повідомленні
+            Log.i("OnCreate", "~" + extras.getString("notification") );
+        }
     }
 
     private void showNotification() {
@@ -164,19 +172,25 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
         // Надсилання повідомлення
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra( "notification", "1001" );
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder( this, "ChatChannel" )
                         .setSmallIcon( android.R.drawable.star_big_on )
                         .setContentTitle( "Чат" )
                         .setContentText( "Нове повідомлення")
-                        .setPriority( NotificationManager.IMPORTANCE_DEFAULT );
+                        .setPriority( NotificationManager.IMPORTANCE_DEFAULT )
+                        .setContentIntent( PendingIntent.getActivity(
+                                this, 0,
+                                intent,
+                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                        ));
         Notification notification = builder.build();
         notificationManager.notify( 1001, notification );
     }
 
 
-
-    private void urlToImgView( String url, ImageView imageView ) {
+    private void urlToImgView(String url, ImageView imageView ) {
         CompletableFuture
                 .supplyAsync( () -> {
                     try( InputStream inputStream = new URL(url).openStream() ) {
